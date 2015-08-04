@@ -19,12 +19,16 @@ import retrofit.RestAdapter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.app.AppObservable;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ProgressBar progressBar;
-    private RepoAdapter repoAdapter;
+    RepoAdapter repoAdapter;
+
+    CompositeSubscription compositeSubscription
+            = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         final GithubApi githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
         final Observable<List<Repo>> googleRepos = githubApi.getGoogleRepos();
-        AppObservable.bindActivity(this, googleRepos).subscribe(new Subscriber<List<Repo>>() {
+        compositeSubscription.add(AppObservable.bindActivity(this, googleRepos).subscribe(new Subscriber<List<Repo>>() {
             @Override
             public void onCompleted() {
 
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             public void onNext(List<Repo> repos) {
                 showData(repos);
             }
-        });
+        }));
     }
 
     private void showProgressBar() {
@@ -90,5 +94,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        compositeSubscription.unsubscribe();
+        super.onDestroy();
     }
 }
