@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         repoAdapter = new RepoAdapter(this, new ArrayList<Repo>());
         recyclerView.setAdapter(repoAdapter);
 
+        showProgressBar();
         final GithubApi githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
         githubApi.getGoogleRepos(new Callback<List<Repo>>() {
             @Override
@@ -49,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(MainActivity.class.getSimpleName(), "Error", error);
             }
         });
+    }
+
+    private void showProgressBar() {
+        recyclerView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showData(List<Repo> repos) {

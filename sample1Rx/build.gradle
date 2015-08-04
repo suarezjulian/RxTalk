@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.0 rc3"
 
     defaultConfig {
-        applicationId "co.juliansuarez.rxtalk"
+        applicationId "co.juliansuarez.rxtalk.sample1Rx"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
@@ -25,5 +25,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'io.reactivex:rxandroid:0.25.0'
     compile 'com.android.support:recyclerview-v7:22.2.1'
 }

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.0 rc3"
 
     defaultConfig {
-        applicationId "co.juliansuarez.rxtalk"
+        applicationId "co.juliansuarez.rxtalk.sample1"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1

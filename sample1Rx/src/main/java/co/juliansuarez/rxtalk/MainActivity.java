@@ -15,10 +15,10 @@ import java.util.List;
 
 import co.juliansuarez.rxtalk.models.Repo;
 import co.juliansuarez.rxtalk.network.GithubApi;
-import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.app.AppObservable;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,18 +37,31 @@ public class MainActivity extends AppCompatActivity {
         repoAdapter = new RepoAdapter(this, new ArrayList<Repo>());
         recyclerView.setAdapter(repoAdapter);
 
+        showProgressBar();
+
         final GithubApi githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
-        githubApi.getGoogleRepos(new Callback<List<Repo>>() {
+        final Observable<List<Repo>> googleRepos = githubApi.getGoogleRepos();
+        AppObservable.bindActivity(this, googleRepos).subscribe(new Subscriber<List<Repo>>() {
             @Override
-            public void success(List<Repo> repos, Response response) {
-                showData(repos);
+            public void onCompleted() {
+
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                Log.d(MainActivity.class.getSimpleName(), "Error", error);
+            public void onError(Throwable e) {
+                Log.d(MainActivity.class.getSimpleName(), "Error", e);
+            }
+
+            @Override
+            public void onNext(List<Repo> repos) {
+                showData(repos);
             }
         });
+    }
+
+    private void showProgressBar() {
+        recyclerView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showData(List<Repo> repos) {
