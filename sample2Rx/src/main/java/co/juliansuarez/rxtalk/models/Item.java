@@ -8,9 +8,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * Created by julian on 7/30/15.
+ * Created by julian on 8/5/15.
  */
-public class Repo {
+public class Item {
 
     @Expose
     private Integer id;
@@ -160,7 +160,7 @@ public class Repo {
     @Expose
     private String svnUrl;
     @Expose
-    private String homepage;
+    private Object homepage;
     @Expose
     private Integer size;
     @SerializedName("stargazers_count")
@@ -203,7 +203,7 @@ public class Repo {
     @Expose
     private String defaultBranch;
     @Expose
-    private Permissions permissions;
+    private Double score;
 
     /**
      * @return The id
@@ -922,14 +922,14 @@ public class Repo {
     /**
      * @return The homepage
      */
-    public String getHomepage() {
+    public Object getHomepage() {
         return homepage;
     }
 
     /**
      * @param homepage The homepage
      */
-    public void setHomepage(String homepage) {
+    public void setHomepage(Object homepage) {
         this.homepage = homepage;
     }
 
@@ -1144,17 +1144,17 @@ public class Repo {
     }
 
     /**
-     * @return The permissions
+     * @return The score
      */
-    public Permissions getPermissions() {
-        return permissions;
+    public Double getScore() {
+        return score;
     }
 
     /**
-     * @param permissions The permissions
+     * @param score The score
      */
-    public void setPermissions(Permissions permissions) {
-        this.permissions = permissions;
+    public void setScore(Double score) {
+        this.score = score;
     }
 
     @Override
@@ -1164,7 +1164,7 @@ public class Repo {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(name).append(fullName).append(owner).append(_private).append(htmlUrl).append(description).append(fork).append(url).append(forksUrl).append(keysUrl).append(collaboratorsUrl).append(teamsUrl).append(hooksUrl).append(issueEventsUrl).append(eventsUrl).append(assigneesUrl).append(branchesUrl).append(tagsUrl).append(blobsUrl).append(gitTagsUrl).append(gitRefsUrl).append(treesUrl).append(statusesUrl).append(languagesUrl).append(stargazersUrl).append(contributorsUrl).append(subscribersUrl).append(subscriptionUrl).append(commitsUrl).append(gitCommitsUrl).append(commentsUrl).append(issueCommentUrl).append(contentsUrl).append(compareUrl).append(mergesUrl).append(archiveUrl).append(downloadsUrl).append(issuesUrl).append(pullsUrl).append(milestonesUrl).append(notificationsUrl).append(labelsUrl).append(releasesUrl).append(createdAt).append(updatedAt).append(pushedAt).append(gitUrl).append(sshUrl).append(cloneUrl).append(svnUrl).append(homepage).append(size).append(stargazersCount).append(watchersCount).append(language).append(hasIssues).append(hasDownloads).append(hasWiki).append(hasPages).append(forksCount).append(mirrorUrl).append(openIssuesCount).append(forks).append(openIssues).append(watchers).append(defaultBranch).append(permissions).toHashCode();
+        return new HashCodeBuilder().append(id).append(name).append(fullName).append(owner).append(_private).append(htmlUrl).append(description).append(fork).append(url).append(forksUrl).append(keysUrl).append(collaboratorsUrl).append(teamsUrl).append(hooksUrl).append(issueEventsUrl).append(eventsUrl).append(assigneesUrl).append(branchesUrl).append(tagsUrl).append(blobsUrl).append(gitTagsUrl).append(gitRefsUrl).append(treesUrl).append(statusesUrl).append(languagesUrl).append(stargazersUrl).append(contributorsUrl).append(subscribersUrl).append(subscriptionUrl).append(commitsUrl).append(gitCommitsUrl).append(commentsUrl).append(issueCommentUrl).append(contentsUrl).append(compareUrl).append(mergesUrl).append(archiveUrl).append(downloadsUrl).append(issuesUrl).append(pullsUrl).append(milestonesUrl).append(notificationsUrl).append(labelsUrl).append(releasesUrl).append(createdAt).append(updatedAt).append(pushedAt).append(gitUrl).append(sshUrl).append(cloneUrl).append(svnUrl).append(homepage).append(size).append(stargazersCount).append(watchersCount).append(language).append(hasIssues).append(hasDownloads).append(hasWiki).append(hasPages).append(forksCount).append(mirrorUrl).append(openIssuesCount).append(forks).append(openIssues).append(watchers).append(defaultBranch).append(score).toHashCode();
     }
 
     @Override
@@ -1172,11 +1172,11 @@ public class Repo {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof Repo)) {
+        if (!(other instanceof Item)) {
             return false;
         }
-        Repo rhs = ((Repo) other);
-        return new EqualsBuilder().append(id, rhs.id).append(name, rhs.name).append(fullName, rhs.fullName).append(owner, rhs.owner).append(_private, rhs._private).append(htmlUrl, rhs.htmlUrl).append(description, rhs.description).append(fork, rhs.fork).append(url, rhs.url).append(forksUrl, rhs.forksUrl).append(keysUrl, rhs.keysUrl).append(collaboratorsUrl, rhs.collaboratorsUrl).append(teamsUrl, rhs.teamsUrl).append(hooksUrl, rhs.hooksUrl).append(issueEventsUrl, rhs.issueEventsUrl).append(eventsUrl, rhs.eventsUrl).append(assigneesUrl, rhs.assigneesUrl).append(branchesUrl, rhs.branchesUrl).append(tagsUrl, rhs.tagsUrl).append(blobsUrl, rhs.blobsUrl).append(gitTagsUrl, rhs.gitTagsUrl).append(gitRefsUrl, rhs.gitRefsUrl).append(treesUrl, rhs.treesUrl).append(statusesUrl, rhs.statusesUrl).append(languagesUrl, rhs.languagesUrl).append(stargazersUrl, rhs.stargazersUrl).append(contributorsUrl, rhs.contributorsUrl).append(subscribersUrl, rhs.subscribersUrl).append(subscriptionUrl, rhs.subscriptionUrl).append(commitsUrl, rhs.commitsUrl).append(gitCommitsUrl, rhs.gitCommitsUrl).append(commentsUrl, rhs.commentsUrl).append(issueCommentUrl, rhs.issueCommentUrl).append(contentsUrl, rhs.contentsUrl).append(compareUrl, rhs.compareUrl).append(mergesUrl, rhs.mergesUrl).append(archiveUrl, rhs.archiveUrl).append(downloadsUrl, rhs.downloadsUrl).append(issuesUrl, rhs.issuesUrl).append(pullsUrl, rhs.pullsUrl).append(milestonesUrl, rhs.milestonesUrl).append(notificationsUrl, rhs.notificationsUrl).append(labelsUrl, rhs.labelsUrl).append(releasesUrl, rhs.releasesUrl).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(pushedAt, rhs.pushedAt).append(gitUrl, rhs.gitUrl).append(sshUrl, rhs.sshUrl).append(cloneUrl, rhs.cloneUrl).append(svnUrl, rhs.svnUrl).append(homepage, rhs.homepage).append(size, rhs.size).append(stargazersCount, rhs.stargazersCount).append(watchersCount, rhs.watchersCount).append(language, rhs.language).append(hasIssues, rhs.hasIssues).append(hasDownloads, rhs.hasDownloads).append(hasWiki, rhs.hasWiki).append(hasPages, rhs.hasPages).append(forksCount, rhs.forksCount).append(mirrorUrl, rhs.mirrorUrl).append(openIssuesCount, rhs.openIssuesCount).append(forks, rhs.forks).append(openIssues, rhs.openIssues).append(watchers, rhs.watchers).append(defaultBranch, rhs.defaultBranch).append(permissions, rhs.permissions).isEquals();
+        Item rhs = ((Item) other);
+        return new EqualsBuilder().append(id, rhs.id).append(name, rhs.name).append(fullName, rhs.fullName).append(owner, rhs.owner).append(_private, rhs._private).append(htmlUrl, rhs.htmlUrl).append(description, rhs.description).append(fork, rhs.fork).append(url, rhs.url).append(forksUrl, rhs.forksUrl).append(keysUrl, rhs.keysUrl).append(collaboratorsUrl, rhs.collaboratorsUrl).append(teamsUrl, rhs.teamsUrl).append(hooksUrl, rhs.hooksUrl).append(issueEventsUrl, rhs.issueEventsUrl).append(eventsUrl, rhs.eventsUrl).append(assigneesUrl, rhs.assigneesUrl).append(branchesUrl, rhs.branchesUrl).append(tagsUrl, rhs.tagsUrl).append(blobsUrl, rhs.blobsUrl).append(gitTagsUrl, rhs.gitTagsUrl).append(gitRefsUrl, rhs.gitRefsUrl).append(treesUrl, rhs.treesUrl).append(statusesUrl, rhs.statusesUrl).append(languagesUrl, rhs.languagesUrl).append(stargazersUrl, rhs.stargazersUrl).append(contributorsUrl, rhs.contributorsUrl).append(subscribersUrl, rhs.subscribersUrl).append(subscriptionUrl, rhs.subscriptionUrl).append(commitsUrl, rhs.commitsUrl).append(gitCommitsUrl, rhs.gitCommitsUrl).append(commentsUrl, rhs.commentsUrl).append(issueCommentUrl, rhs.issueCommentUrl).append(contentsUrl, rhs.contentsUrl).append(compareUrl, rhs.compareUrl).append(mergesUrl, rhs.mergesUrl).append(archiveUrl, rhs.archiveUrl).append(downloadsUrl, rhs.downloadsUrl).append(issuesUrl, rhs.issuesUrl).append(pullsUrl, rhs.pullsUrl).append(milestonesUrl, rhs.milestonesUrl).append(notificationsUrl, rhs.notificationsUrl).append(labelsUrl, rhs.labelsUrl).append(releasesUrl, rhs.releasesUrl).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(pushedAt, rhs.pushedAt).append(gitUrl, rhs.gitUrl).append(sshUrl, rhs.sshUrl).append(cloneUrl, rhs.cloneUrl).append(svnUrl, rhs.svnUrl).append(homepage, rhs.homepage).append(size, rhs.size).append(stargazersCount, rhs.stargazersCount).append(watchersCount, rhs.watchersCount).append(language, rhs.language).append(hasIssues, rhs.hasIssues).append(hasDownloads, rhs.hasDownloads).append(hasWiki, rhs.hasWiki).append(hasPages, rhs.hasPages).append(forksCount, rhs.forksCount).append(mirrorUrl, rhs.mirrorUrl).append(openIssuesCount, rhs.openIssuesCount).append(forks, rhs.forks).append(openIssues, rhs.openIssues).append(watchers, rhs.watchers).append(defaultBranch, rhs.defaultBranch).append(score, rhs.score).isEquals();
     }
 
 }

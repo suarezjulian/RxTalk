@@ -8,51 +8,86 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import co.juliansuarez.rxtalk.models.Repo;
+import co.juliansuarez.rxtalk.models.Item;
+import co.juliansuarez.rxtalk.models.RepoSearchResults;
 import co.juliansuarez.rxtalk.network.GithubApi;
-import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.widget.OnTextChangeEvent;
+import rx.android.widget.WidgetObservable;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int MIN_CHARACTERS = 3;
     RecyclerView recyclerView;
     ProgressBar progressBar;
-    private RepoAdapter repoAdapter;
+    EditText editTextSearchTerm;
+    CompositeSubscription compositeSubscription
+            = new CompositeSubscription();
+    private ItemAdapter itemAdapter;
+    private GithubApi githubApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        editTextSearchTerm = (EditText) findViewById(R.id.editTextSearchTerm);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        repoAdapter = new RepoAdapter(this, new ArrayList<Repo>());
-        recyclerView.setAdapter(repoAdapter);
+        itemAdapter = new ItemAdapter(this, new ArrayList<>());
+        recyclerView.setAdapter(itemAdapter);
 
-        final GithubApi githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
-        githubApi.getGoogleRepos(new Callback<List<Repo>>() {
+        githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
+
+        final Observable<OnTextChangeEvent> searchTermChangedObservable = WidgetObservable.text(editTextSearchTerm);
+        final Observable<RepoSearchResults> searchResultsObservable = AppObservable.bindActivity(this, searchTermChangedObservable
+                .debounce(3, TimeUnit.SECONDS)
+                .filter(onTextChangeEvent -> onTextChangeEvent.text().length() > MIN_CHARACTERS)
+                .flatMap(onTextChangeEvent -> callSearchWS(onTextChangeEvent.text().toString())));
+        final Subscription searchResultsSubscription = searchResultsObservable.subscribe(new Subscriber<RepoSearchResults>() {
             @Override
-            public void success(List<Repo> repos, Response response) {
-                showData(repos);
+            public void onCompleted() {
+
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                Log.d(MainActivity.class.getSimpleName(), "Error", error);
+            public void onError(Throwable e) {
+                Log.d(MainActivity.class.getSimpleName(), "Error", e);
+            }
+
+            @Override
+            public void onNext(RepoSearchResults repoSearchResults) {
+                showData(repoSearchResults.getItems());
             }
         });
+        compositeSubscription.add(searchResultsSubscription);
     }
 
-    private void showData(List<Repo> repos) {
-        repoAdapter.updateData(repos);
+    private Observable<RepoSearchResults> callSearchWS(String searchTerm) {
+        runOnUiThread(this::showProgressBar);
+        return githubApi.searchRepos(searchTerm);
+    }
+
+    private void showProgressBar() {
+        recyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void showData(List<Item> repos) {
+        itemAdapter.updateData(repos);
         progressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
     }
@@ -77,5 +112,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        compositeSubscription.unsubscribe();
+        super.onDestroy();
     }
 }

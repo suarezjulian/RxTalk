@@ -18,6 +18,7 @@ import co.juliansuarez.rxtalk.network.GithubApi;
 import retrofit.RestAdapter;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.subscriptions.CompositeSubscription;
 
@@ -44,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
         showProgressBar();
 
         final GithubApi githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
-        final Observable<List<Repo>> googleRepos = githubApi.getGoogleRepos();
-        compositeSubscription.add(AppObservable.bindActivity(this, googleRepos).subscribe(new Subscriber<List<Repo>>() {
+        final Observable<List<Repo>> googleReposObservable = AppObservable.bindActivity(this, githubApi.getGoogleRepos());
+        final Subscription googleReposSubscription = googleReposObservable.subscribe(new Subscriber<List<Repo>>() {
             @Override
             public void onCompleted() {
 
@@ -60,12 +61,13 @@ public class MainActivity extends AppCompatActivity {
             public void onNext(List<Repo> repos) {
                 showData(repos);
             }
-        }));
+        });
+        compositeSubscription.add(googleReposSubscription);
     }
 
     private void showProgressBar() {
         recyclerView.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void showData(List<Repo> repos) {

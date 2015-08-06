@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "23.0.0 rc3"
 
     defaultConfig {
-        applicationId "co.juliansuarez.rxtalk"
+        applicationId "co.juliansuarez.sample2"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
@@ -16,6 +17,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
