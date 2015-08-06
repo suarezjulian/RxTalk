@@ -1,5 +1,18 @@
 package co.juliansuarez.rxtalk;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import retrofit.RestAdapter;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.widget.OnTextChangeEvent;
+import rx.android.widget.WidgetObservable;
+import rx.subscriptions.CompositeSubscription;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,21 +24,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import co.juliansuarez.rxtalk.models.Item;
 import co.juliansuarez.rxtalk.models.RepoSearchResults;
 import co.juliansuarez.rxtalk.network.GithubApi;
-import retrofit.RestAdapter;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.app.AppObservable;
-import rx.android.widget.OnTextChangeEvent;
-import rx.android.widget.WidgetObservable;
-import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(Throwable e) {
-                Log.d(MainActivity.class.getSimpleName(), "Error", e);
+                        Log.e(MainActivity.class.getSimpleName(), "Error", e);
             }
 
             @Override

@@ -1,5 +1,15 @@
 package co.juliansuarez.rxtalk;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.RestAdapter;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.subscriptions.CompositeSubscription;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,17 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import co.juliansuarez.rxtalk.models.Repo;
 import co.juliansuarez.rxtalk.network.GithubApi;
-import retrofit.RestAdapter;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.app.AppObservable;
-import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        repoAdapter = new RepoAdapter(this, new ArrayList<Repo>());
+        repoAdapter = new RepoAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(repoAdapter);
 
         showProgressBar();
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(Throwable e) {
-                Log.d(MainActivity.class.getSimpleName(), "Error", e);
+                Log.e(MainActivity.class.getSimpleName(), "Error", e);
             }
 
             @Override
