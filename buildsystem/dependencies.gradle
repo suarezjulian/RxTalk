@@ -1,0 +1,23 @@
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+ext {
+    recyclerViewVersion = '22.2.1'
+    gsonVersion = '2.3.1'
+    appcompatVersion = '22.2.1'
+    appacheCommonsLangVersion = '3.4'
+    retrofitVersion = '1.9.0'
+    rxAndroidVersion = '0.25.0'
+
+    dependencies = [
+            recyclerView:       "com.android.support:recyclerview-v7:${recyclerViewVersion}",
+            gson:               "com.google.code.gson:gson:${gsonVersion}",
+            appcompat:          "com.android.support:appcompat-v7:${appcompatVersion}",
+            appacheCommonsLang: "org.apache.commons:commons-lang3:${appacheCommonsLangVersion}",
+            retrofit:           "com.squareup.retrofit:retrofit:${retrofitVersion}",
+            rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
+    ]
+}

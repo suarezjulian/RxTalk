@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "23.0.0 rc3"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "co.juliansuarez.sample2Rx"
-        minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.androidVersionCode
+        versionName rootProject.ext.androidVersionName
     }
     buildTypes {
         release {
@@ -20,17 +20,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility rootProject.ext.sourceCompatibility
+        targetCompatibility rootProject.ext.targetCompatibility
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'io.reactivex:rxandroid:0.25.0'
+    def dependencies = rootProject.ext.dependencies
+
+    compile dependencies.appcompat
+    compile dependencies.gson
+    compile dependencies.appacheCommonsLang
+    compile dependencies.retrofit
+    compile dependencies.recyclerView
+    compile dependencies.rxAndroid
 }
