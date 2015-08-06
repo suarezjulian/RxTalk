@@ -1,5 +1,7 @@
 package co.juliansuarez.rxtalk;
 
+import java.util.List;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,21 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
-
-import co.juliansuarez.rxtalk.models.Repo;
+import co.juliansuarez.rxtalk.models.Item;
 
 /**
  * Created by julian on 8/3/15.
  */
-public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.RepoViewHolder> {
 
-    private List<Repo> repoList;
     private final LayoutInflater inflater;
+    private List<Item> itemList;
 
-    public RepoAdapter(Context context, List<Repo> repoList) {
+    public ItemAdapter(Context context, List<Item> itemList) {
         this.inflater = LayoutInflater.from(context);
-        this.repoList = repoList;
+        this.itemList = itemList;
     }
 
     @Override
@@ -31,18 +31,19 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
 
     @Override
     public void onBindViewHolder(RepoViewHolder holder, int position) {
-        holder.textViewName.setText(repoList.get(position).getName());
-        holder.textViewOwner.setText(repoList.get(position).getOwner().getLogin());
-        holder.textViewIssues.setText(holder.textViewIssues.getContext().getString(R.string.issues_number_label, repoList.get(position).getOpenIssuesCount()));
+        holder.textViewName.setText(itemList.get(position).getName());
+        holder.textViewOwner.setText(itemList.get(position).getOwner().getLogin());
+        holder.textViewIssues.setText(holder.textViewIssues.getContext().getString(R.string.issues_number_label,
+                itemList.get(position).getOpenIssuesCount()));
     }
 
     @Override
     public int getItemCount() {
-        return repoList.size();
+        return itemList.size();
     }
 
-    public void updateData(List<Repo> repos) {
-        repoList = repos;
+    public void updateData(List<Item> items) {
+        itemList = items;
         notifyDataSetChanged();
     }
 

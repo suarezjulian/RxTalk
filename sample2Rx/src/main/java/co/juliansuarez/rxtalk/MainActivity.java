@@ -31,6 +31,7 @@ import co.juliansuarez.rxtalk.network.GithubApi;
 public class MainActivity extends AppCompatActivity {
 
     public static final int MIN_CHARACTERS = 3;
+    public static final int MIN_SECONDS = 2;
     RecyclerView recyclerView;
     ProgressBar progressBar;
     EditText editTextSearchTerm;
@@ -44,18 +45,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editTextSearchTerm = (EditText) findViewById(R.id.editTextSearchTerm);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        itemAdapter = new ItemAdapter(this, new ArrayList<>());
-        recyclerView.setAdapter(itemAdapter);
-
-        githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
+        init();
 
         final Observable<OnTextChangeEvent> searchTermChangedObservable = WidgetObservable.text(editTextSearchTerm);
         final Observable<RepoSearchResults> searchResultsObservable = AppObservable.bindActivity(this, searchTermChangedObservable
-                .debounce(3, TimeUnit.SECONDS)
+.debounce(MIN_SECONDS, TimeUnit.SECONDS)
                 .filter(onTextChangeEvent -> onTextChangeEvent.text().length() > MIN_CHARACTERS)
                 .flatMap(onTextChangeEvent -> callSearchWS(onTextChangeEvent.text().toString())));
         final Subscription searchResultsSubscription = searchResultsObservable.subscribe(new Subscriber<RepoSearchResults>() {
@@ -75,6 +69,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         compositeSubscription.add(searchResultsSubscription);
+    }
+
+    private void init() {
+        editTextSearchTerm = (EditText) findViewById(R.id.editTextSearchTerm);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        itemAdapter = new ItemAdapter(this, new ArrayList<>());
+        recyclerView.setAdapter(itemAdapter);
+
+        githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
     }
 
     private Observable<RepoSearchResults> callSearchWS(String searchTerm) {
