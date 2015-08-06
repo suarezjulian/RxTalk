@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 delayedCountDown.start();
+            } else if (delayedCountDown != null) {
+                delayedCountDown.cancel();
             }
         }
     };

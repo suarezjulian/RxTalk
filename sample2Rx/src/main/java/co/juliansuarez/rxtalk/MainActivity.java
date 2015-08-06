@@ -35,8 +35,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ProgressBar progressBar;
     EditText editTextSearchTerm;
-    CompositeSubscription compositeSubscription
-            = new CompositeSubscription();
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
     private ItemAdapter itemAdapter;
     private GithubApi githubApi;
 
@@ -48,26 +47,27 @@ public class MainActivity extends AppCompatActivity {
         init();
 
         final Observable<OnTextChangeEvent> searchTermChangedObservable = WidgetObservable.text(editTextSearchTerm);
-        final Observable<RepoSearchResults> searchResultsObservable = AppObservable.bindActivity(this, searchTermChangedObservable
-.debounce(MIN_SECONDS, TimeUnit.SECONDS)
-                .filter(onTextChangeEvent -> onTextChangeEvent.text().length() > MIN_CHARACTERS)
-                .flatMap(onTextChangeEvent -> callSearchWS(onTextChangeEvent.text().toString())));
-        final Subscription searchResultsSubscription = searchResultsObservable.subscribe(new Subscriber<RepoSearchResults>() {
-            @Override
-            public void onCompleted() {
+        final Observable<RepoSearchResults> searchResultsObservable = AppObservable.bindActivity(this,
+                searchTermChangedObservable.debounce(MIN_SECONDS, TimeUnit.SECONDS)
+                        .filter(onTextChangeEvent -> onTextChangeEvent.text().length() > MIN_CHARACTERS)
+                        .flatMap(onTextChangeEvent -> callSearchWS(onTextChangeEvent.text().toString())));
+        final Subscription searchResultsSubscription = searchResultsObservable
+                .subscribe(new Subscriber<RepoSearchResults>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
                         Log.e(MainActivity.class.getSimpleName(), "Error", e);
-            }
+                    }
 
-            @Override
-            public void onNext(RepoSearchResults repoSearchResults) {
-                showData(repoSearchResults.getItems());
-            }
-        });
+                    @Override
+                    public void onNext(RepoSearchResults repoSearchResults) {
+                        showData(repoSearchResults.getItems());
+                    }
+                });
         compositeSubscription.add(searchResultsSubscription);
     }
 
