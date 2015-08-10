@@ -8,9 +8,10 @@ import co.juliansuarez.rxtalk.models.Repo;
  * Created by j.suarez on 8/6/2015.
  */
 public class RepoData {
-    private static final long STALE_MS = 5 * 1000; // Data is stale after 5 seconds
-    long timestamp;
+    private static final long STALE_MS = 30 * 1000; // Data is stale after 30 seconds
+    private long timestamp;
     private List<Repo> repos;
+    private String dataSource;
 
     public RepoData() {
         // Needed for gson
@@ -27,5 +28,13 @@ public class RepoData {
 
     public List<Repo> getRepos() {
         return repos;
+    }
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 }

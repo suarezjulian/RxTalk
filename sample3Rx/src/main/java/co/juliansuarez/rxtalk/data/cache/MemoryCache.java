@@ -11,6 +11,9 @@ public class MemoryCache implements Cache<RepoData> {
 
     @Override
     public RepoData getData() {
+        if (data != null) {
+            data.setDataSource(MemoryCache.class.getSimpleName());
+        }
         return data;
     }
 

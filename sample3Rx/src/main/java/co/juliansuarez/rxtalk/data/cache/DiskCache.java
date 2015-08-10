@@ -48,15 +48,15 @@ public class DiskCache implements Cache<RepoData> {
 
     private RepoData readFromCacheFile() {
         File cacheFile = new File(context.getCacheDir(), CACHE_FILE_NAME);
-        Reader cacheReader = null;
+        Reader cacheReader;
         RepoData repoData = null;
         try {
             cacheReader = new FileReader(cacheFile);
             repoData = gson.fromJson(cacheReader, RepoData.class);
+            repoData.setDataSource(DiskCache.class.getSimpleName());
         } catch (FileNotFoundException e) {
-            Log.e(DiskCache.class.getSimpleName(), "Data not found ", e);
+            Log.d(DiskCache.class.getSimpleName(), "Data not found ", e);
         }
-
         return repoData;
     }
 
