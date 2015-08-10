@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sample3Rx</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Settings</string>
 
     <string name="issues_number_label">%1$d issues</string>
 </resources>

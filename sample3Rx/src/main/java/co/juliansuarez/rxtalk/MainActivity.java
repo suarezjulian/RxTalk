@@ -1,14 +1,5 @@
 package co.juliansuarez.rxtalk;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.app.AppObservable;
-import rx.subscriptions.CompositeSubscription;
-
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,10 +10,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import co.juliansuarez.rxtalk.data.DataSourceType;
+import java.util.ArrayList;
+import java.util.List;
+
 import co.juliansuarez.rxtalk.data.RepoData;
-import co.juliansuarez.rxtalk.data.observables.ObservableFactory;
+import co.juliansuarez.rxtalk.data.observables.Sources;
 import co.juliansuarez.rxtalk.models.Repo;
+import co.juliansuarez.rxtalk.network.GithubApi;
+import retrofit.RestAdapter;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     CompositeSubscription compositeSubscription = new CompositeSubscription();
     private RepoAdapter repoAdapter;
+    private Sources sources;
+    private Subscription dataSubscription;
+    private Observable<RepoData> repoDataObservable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +43,15 @@ public class MainActivity extends AppCompatActivity {
 
         showProgressBar();
 
-        final Observable<RepoData> memoryObservable = ObservableFactory.getRepoDataObservable(this,
-                DataSourceType.MEMORY);
-        final Observable<RepoData> diskObservable = ObservableFactory.getRepoDataObservable(this,
-                DataSourceType.DISK);
-        final Observable<RepoData> networkObservable = ObservableFactory.getRepoDataObservable(this,
-                DataSourceType.NETWORK);
+        final Observable<RepoData> memoryObservable = sources.getMemoryObservable();
+        final Observable<RepoData> diskObservable = sources.getDiskObservable();
+        final Observable<RepoData> networkObservable = sources.getNetworkObservable();
 
         Observable<RepoData> source = Observable.concat(memoryObservable, diskObservable, networkObservable)
                 .first();
 
-        final Observable<RepoData> googleReposObservable = AppObservable.bindActivity(this, source);
-        final Subscription googleReposSubscription = googleReposObservable.subscribe(new Subscriber<RepoData>() {
+        repoDataObservable = AppObservable.bindActivity(this, source);
+        dataSubscription = repoDataObservable.subscribe(new Subscriber<RepoData>() {
             @Override
             public void onCompleted() {
 
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 showData(repoData.getRepos());
             }
         });
-        compositeSubscription.add(googleReposSubscription);
+        compositeSubscription.add(dataSubscription);
     }
 
     private void init() {
@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         repoAdapter = new RepoAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(repoAdapter);
+
+        GithubApi githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
+        sources = new Sources(this, githubApi);
     }
 
     private void showProgressBar() {
@@ -104,11 +107,46 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            refresh();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void refresh() {
+        showProgressBar();
+        if (dataSubscription != null) {
+            compositeSubscription.remove(dataSubscription);
+            dataSubscription.unsubscribe();
+        }
+
+        final Observable<RepoData> memoryObservable = sources.getMemoryObservable();
+        final Observable<RepoData> diskObservable = sources.getDiskObservable();
+        final Observable<RepoData> networkObservable = sources.getNetworkObservable();
+
+        Observable<RepoData> source = Observable.concat(memoryObservable, diskObservable, networkObservable)
+                .first();
+
+        repoDataObservable = AppObservable.bindActivity(this, source);
+        dataSubscription = repoDataObservable.subscribe(new Subscriber<RepoData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(MainActivity.class.getSimpleName(), "Error", e);
+            }
+
+            @Override
+            public void onNext(RepoData repoData) {
+                showData(repoData.getRepos());
+            }
+        });
+        compositeSubscription.add(dataSubscription);
     }
 
     @Override
