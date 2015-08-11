@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
         final Observable<RepoSearchResults> searchResultsObservable = AppObservable.bindActivity(this,
                 searchTermChangedObservable.debounce(MIN_SECONDS, TimeUnit.SECONDS)
                         .filter(onTextChangeEvent -> onTextChangeEvent.text().length() > MIN_CHARACTERS)
-                        .flatMap(onTextChangeEvent -> callSearchWS(onTextChangeEvent.text().toString())));
+                        .flatMap(onTextChangeEvent -> callSearchWS(onTextChangeEvent.text().toString()).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())));
         final Subscription searchResultsSubscription = searchResultsObservable
                 .subscribe(new Subscriber<RepoSearchResults>() {
                     @Override
@@ -85,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Observable<RepoSearchResults> callSearchWS(String searchTerm) {
         runOnUiThread(this::showProgressBar);
-        return githubApi.searchRepos(searchTerm).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        return githubApi.searchRepos(searchTerm);
     }
 
     private void showProgressBar() {
