@@ -21,9 +21,4 @@ public class MemoryCache implements Cache<RepoData> {
     public void saveData(RepoData data) {
         this.data = data;
     }
-
-    @Override
-    public boolean isUptoDate() {
-        return getData() != null && getData().isUpToDate();
-    }
 }

@@ -8,5 +8,4 @@ public interface Cache<T> {
 
     void saveData(T data);
 
-    boolean isUptoDate();
 }

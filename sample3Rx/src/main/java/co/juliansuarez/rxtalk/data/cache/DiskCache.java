@@ -1,5 +1,10 @@
 package co.juliansuarez.rxtalk.data.cache;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.google.gson.Gson;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,12 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 
-import android.content.Context;
-import android.util.Log;
-
 import co.juliansuarez.rxtalk.data.RepoData;
-
-import com.google.gson.Gson;
 
 /**
  * Created by j.suarez on 8/6/2015.
@@ -39,13 +39,7 @@ public class DiskCache implements Cache<RepoData> {
     public void saveData(RepoData data) {
         writeToCacheFile(data);
     }
-
-    @Override
-    public boolean isUptoDate() {
-        final RepoData data = getData();
-        return data != null && data.isUpToDate();
-    }
-
+    
     private RepoData readFromCacheFile() {
         File cacheFile = new File(context.getCacheDir(), CACHE_FILE_NAME);
         Reader cacheReader;
