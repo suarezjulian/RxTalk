@@ -1,15 +1,5 @@
 package co.juliansuarez.rxtalk;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit.RestAdapter;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.app.AppObservable;
-import rx.subscriptions.CompositeSubscription;
-
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,8 +10,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import co.juliansuarez.rxtalk.models.Repo;
 import co.juliansuarez.rxtalk.network.GithubApi;
+import retrofit.RestAdapter;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
         showProgressBar();
 
         final GithubApi githubApi = new RestAdapter.Builder().setEndpoint("https://api.github.com").build().create(GithubApi.class);
-        final Observable<List<Repo>> googleReposObservable = AppObservable.bindActivity(this, githubApi.getGoogleRepos());
+        final Observable<List<Repo>> googleReposObservable = AppObservable.bindActivity(this, githubApi.getGoogleRepos())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
         final Subscription googleReposSubscription = googleReposObservable.subscribe(new Subscriber<List<Repo>>() {
             @Override
             public void onCompleted() {
