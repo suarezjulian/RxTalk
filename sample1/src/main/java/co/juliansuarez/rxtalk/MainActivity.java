@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showProgressBar() {
         recyclerView.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void showData(List<Repo> repos) {
