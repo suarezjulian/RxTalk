@@ -19,7 +19,7 @@ allprojects {
         minSdkVersion = 15
         targetSdkVersion = 22
         compileSdkVersion = 22
-        buildToolsVersion = "23.0.0 rc3"
+        buildToolsVersion = "23.0.1"
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
