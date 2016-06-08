@@ -1,5 +1,6 @@
 include ':sample1'
 include ':sample1Rx'
 include ':sample2'
+include ':sample2RxExercise'
 include ':sample2Rx'
 include ':sample3Rx'
