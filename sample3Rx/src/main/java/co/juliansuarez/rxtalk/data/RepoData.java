@@ -8,7 +8,7 @@ import co.juliansuarez.rxtalk.models.Repo;
  * Created by j.suarez on 8/6/2015.
  */
 public class RepoData {
-    private static final long STALE_MS = 30 * 1000; // Data is stale after 30 seconds
+    private static final long STALE_MS = 20 * 1000; // Data is stale after 20 seconds
     private long timestamp;
     private List<Repo> repos;
     private String dataSource;

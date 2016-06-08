@@ -20,16 +20,13 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ProgressBar progressBar;
     RepoAdapter repoAdapter;
-
-    CompositeSubscription compositeSubscription
-            = new CompositeSubscription();
+    private Subscription googleReposSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         final Observable<List<Repo>> googleReposObservable = AppObservable.bindActivity(this, githubApi.getGoogleRepos())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        final Subscription googleReposSubscription = googleReposObservable.subscribe(new Subscriber<List<Repo>>() {
+        googleReposSubscription = googleReposObservable.subscribe(new Subscriber<List<Repo>>() {
             @Override
             public void onCompleted() {
 
@@ -64,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 showData(repos);
             }
         });
-        compositeSubscription.add(googleReposSubscription);
     }
 
     private void showProgressBar() {
@@ -80,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        compositeSubscription.unsubscribe();
+        googleReposSubscription.unsubscribe();
         super.onDestroy();
     }
 }

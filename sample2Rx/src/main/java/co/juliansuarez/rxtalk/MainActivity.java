@@ -25,7 +25,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,9 +33,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ProgressBar progressBar;
     EditText editTextSearchTerm;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
     private ItemAdapter itemAdapter;
     private GithubApi githubApi;
+    private Subscription searchResultsSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                         .flatMap(onTextChangeEvent -> callSearchWS(onTextChangeEvent.text().toString())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())));
-        final Subscription searchResultsSubscription = searchResultsObservable
+        searchResultsSubscription = searchResultsObservable
                 .subscribe(new Subscriber<RepoSearchResults>() {
                     @Override
                     public void onCompleted() {
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                         showData(repoSearchResults.getItems());
                     }
                 });
-        compositeSubscription.add(searchResultsSubscription);
     }
 
     private void init() {
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        compositeSubscription.unsubscribe();
+        searchResultsSubscription.unsubscribe();
         super.onDestroy();
     }
 }
